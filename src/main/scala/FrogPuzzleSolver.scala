@@ -12,36 +12,46 @@ object FrogPuzzleSolver extends IOApp {
     }
   }
 
-  def findSolution(puzzle: Puzzle, actions: Actions): Option[Actions] = {
+  def findSolution(puzzle: Puzzle, actions: Actions, count: Int): (Option[Actions], Int) = {
     val puzzleState = PuzzleState.initialState(puzzle, actions)
     val finalState = runToCompletion(puzzleState)
-    if (finalState.completion == PuzzleCompletion.Success) actions.some
+    if (finalState.completion == PuzzleCompletion.Success) (actions.some, count)
     else {
-      ActionsGenerator.next(actions) match {
-        case None => None
-        case Some(nextActions) => findSolution(puzzle, nextActions)
+      ActionsGenerator.next(puzzle, actions) match {
+        case None => (None, count)
+        case Some(nextActions) => findSolution(puzzle, nextActions, count + 1)
       }
     }
   }
 
-  def findSolution(puzzle: Puzzle): Option[Actions] = {
+  def findSolution(puzzle: Puzzle): (Option[Actions], Int) = {
     val initialActions = ActionsGenerator.initialState(puzzle)
-    findSolution(puzzle, initialActions)
+    findSolution(puzzle, initialActions, 1)
   }
 
   def run(args: List[String]): IO[ExitCode] = {
     IO {
-      val level1Platforms = Map(
+      val level6Platforms = Map(
+        (-1, 1) -> PlatformType.NormalPlatform,
+        (-1, 2) -> PlatformType.NormalPlatform,
+        (-1, 3) -> PlatformType.NormalPlatform,
         (0, 0) -> PlatformType.StartPlatform,
         (0, 1) -> PlatformType.NormalPlatform,
         (0, 2) -> PlatformType.NormalPlatform,
+        (0, 3) -> PlatformType.NormalPlatform,
         (1, 2) -> PlatformType.NormalPlatform,
-        (2, 2) -> PlatformType.EndPlatform,
+        (1, 3) -> PlatformType.EndPlatform,
+        (1, 4) -> PlatformType.NormalPlatform,
+        (2, 2) -> PlatformType.NormalPlatform,
+        (2, 3) -> PlatformType.NormalPlatform,
+        (2, 4) -> PlatformType.NormalPlatform,
+        (3, 2) -> PlatformType.NormalPlatform,
+        (3, 3) -> PlatformType.NormalPlatform,
       )
 
-      val level1 = Puzzle(level1Platforms)
+      val level6 = Puzzle(level6Platforms)
 
-      println(findSolution(level1).map { _.filter { _._2 != Action.NoAction } })
+      println(findSolution(level6))
     }.as(ExitCode.Success)
   }
 }
