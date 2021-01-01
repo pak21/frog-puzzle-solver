@@ -6,4 +6,5 @@ object PuzzleCompletion {
   case object InWater extends PuzzleCompletion
   case object UnvisitedPlatforms extends PuzzleCompletion
   case object TimedOut extends PuzzleCompletion
+  case object Loop extends PuzzleCompletion
 }

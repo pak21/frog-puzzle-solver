@@ -12,21 +12,22 @@ object FrogPuzzleSolver extends IOApp {
     }
   }
 
-  def findSolution(puzzle: Puzzle, actions: Actions, count: Int): (Option[Actions], Int) = {
+  def findSolution(puzzle: Puzzle, actions: Actions, count: Int, moves: Int): (Option[Actions], Int, Int) = {
     val puzzleState = PuzzleState.initialState(puzzle, actions)
     val finalState = runToCompletion(puzzleState)
-    if (finalState.completion == PuzzleCompletion.Success) (actions.some, count)
+    val nextMoves = moves + finalState.moves
+    if (finalState.completion == PuzzleCompletion.Success) (actions.some, count, nextMoves)
     else {
       ActionsGenerator.next(puzzle, actions) match {
-        case None => (None, count)
-        case Some(nextActions) => findSolution(puzzle, nextActions, count + 1)
+        case None => (None, count, nextMoves)
+        case Some(nextActions) => findSolution(puzzle, nextActions, count + 1, nextMoves)
       }
     }
   }
 
-  def findSolution(puzzle: Puzzle): (Option[Actions], Int) = {
+  def findSolution(puzzle: Puzzle): (Option[Actions], Int, Int) = {
     val initialActions = ActionsGenerator.initialState(puzzle)
-    findSolution(puzzle, initialActions, 1)
+    findSolution(puzzle, initialActions, 1, 0)
   }
 
   def run(args: List[String]): IO[ExitCode] = {

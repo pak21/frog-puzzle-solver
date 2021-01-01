@@ -5,15 +5,37 @@ case class PuzzleState(
   actions: Map[(Int, Int), Action],
   frogPosition: (Int, Int),
   direction: Direction,
-  visitedPlatforms: Set[(Int, Int)],
+  seenStates: Set[((Int, Int), Direction)],
   completion: PuzzleCompletion,
   moves: Int
 )
 
 object PuzzleState {
-  def initialState(puzzle: Puzzle, actions: Actions): PuzzleState = {
-    val activeActions = actions.filter { _._2 != Action.NoAction }.toMap
-    PuzzleState(puzzle, activeActions, (0, 0), Direction.Up, Set((0, 0)), PuzzleCompletion.Incomplete, 0)
+  def initialState(puzzle: Puzzle, actions: Actions): PuzzleState =
+    PuzzleState(
+      puzzle,
+      actions.filter { _._2 != Action.NoAction }.toMap,
+      (0, 0),
+      Direction.Up,
+      Set(((0, 0), Direction.Up)),
+      PuzzleCompletion.Incomplete,
+      0)
+
+  private def calculateCompletion(
+      puzzleState: PuzzleState,
+      nextPosition: (Int, Int),
+      nextSeenStates: Set[((Int, Int), Direction)],
+      nextMoves: Int): PuzzleCompletion = {
+    val nextPlatform = puzzleState.puzzle.platforms.get(nextPosition)
+    nextPlatform.map {
+      case PlatformType.EndPlatform =>
+        if (nextSeenStates.map { _._1 }.size == puzzleState.puzzle.platforms.size)
+          PuzzleCompletion.Success
+        else
+          PuzzleCompletion.UnvisitedPlatforms
+      case _ =>
+        if (nextMoves >= 100) PuzzleCompletion.TimedOut else PuzzleCompletion.Incomplete
+    }.getOrElse(PuzzleCompletion.InWater)
   }
 
   def step(puzzleState: PuzzleState): PuzzleState = {
@@ -23,19 +45,6 @@ object PuzzleState {
       case Direction.Left => (puzzleState.frogPosition._1 - 1, puzzleState.frogPosition._2)
       case Direction.Down => (puzzleState.frogPosition._1, puzzleState.frogPosition._2 - 1)
     }
-    val nextVisitedPlatforms = puzzleState.visitedPlatforms + nextPosition
-    val nextMoves = puzzleState.moves + 1
-
-    val nextPlatform = puzzleState.puzzle.platforms.get(nextPosition)
-    val nextCompletion = nextPlatform.map {
-      case PlatformType.EndPlatform =>
-        if (puzzleState.puzzle.platforms.size == nextVisitedPlatforms.size)
-          PuzzleCompletion.Success
-        else
-          PuzzleCompletion.UnvisitedPlatforms
-      case _ =>
-        if (nextMoves >= 100) PuzzleCompletion.TimedOut else PuzzleCompletion.Incomplete
-    }.getOrElse(PuzzleCompletion.InWater)
 
     val nextDirection = puzzleState.actions.get(nextPosition).map {
       case Action.NoAction => ??? // Filtered out, should never happen
@@ -45,12 +54,22 @@ object PuzzleState {
       case Action.MoveDown => Direction.Down
     }.getOrElse(puzzleState.direction)
 
+    val nextState = (nextPosition, nextDirection)
+    val nextMoves = puzzleState.moves + 1
+    val nextSeenStates = puzzleState.seenStates + nextState
+
+    val nextCompletion =
+      if (puzzleState.seenStates.contains(nextState))
+        PuzzleCompletion.Loop
+      else
+        calculateCompletion(puzzleState, nextPosition, nextSeenStates, nextMoves)
+
     PuzzleState(
       puzzleState.puzzle,
       puzzleState.actions,
       nextPosition,
       nextDirection,
-      nextVisitedPlatforms,
+      nextSeenStates,
       nextCompletion,
       nextMoves
     )
