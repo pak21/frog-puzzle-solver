@@ -30,29 +30,84 @@ object FrogPuzzleSolver extends IOApp {
     findSolution(puzzle, initialActions, 1, 0)
   }
 
+  private val level1Platforms = Map(
+    (0, 1) -> PlatformType.NormalPlatform,
+    (0, 2) -> PlatformType.NormalPlatform,
+    (1, 2) -> PlatformType.NormalPlatform,
+    (2, 2) -> PlatformType.EndPlatform,
+  )
+
+  private val level2Platforms = Map(
+    (0, 1) -> PlatformType.NormalPlatform,
+    (0, 2) -> PlatformType.NormalPlatform,
+    (1, 2) -> PlatformType.NormalPlatform,
+    (2, 2) -> PlatformType.NormalPlatform,
+    (2, 3) -> PlatformType.NormalPlatform,
+    (2, 4) -> PlatformType.EndPlatform,
+  )
+
+  private val level3Platforms = Map(
+    (0, 1) -> PlatformType.NormalPlatform,
+    (0, 2) -> PlatformType.NormalPlatform,
+    (0, 3) -> PlatformType.NormalPlatform,
+    (1, 2) -> PlatformType.NormalPlatform,
+    (1, 3) -> PlatformType.NormalPlatform,
+    (2, 2) -> PlatformType.NormalPlatform,
+    (2, 3) -> PlatformType.NormalPlatform,
+    (2, 4) -> PlatformType.EndPlatform,
+  )
+
+  private val level4Platforms = Map(
+    (-1, 1) -> PlatformType.NormalPlatform,
+    (-1, 2) -> PlatformType.NormalPlatform,
+    (-1, 3) -> PlatformType.NormalPlatform,
+    (0, 1) -> PlatformType.NormalPlatform,
+    (0, 2) -> PlatformType.NormalPlatform,
+    (0, 3) -> PlatformType.NormalPlatform,
+    (1, 1) -> PlatformType.NormalPlatform,
+    (1, 2) -> PlatformType.NormalPlatform,
+    (2, 1) -> PlatformType.EndPlatform,
+  )
+
+  private val level5Platforms = Map(
+    (-1, 2) -> PlatformType.NormalPlatform,
+    (-1, 3) -> PlatformType.NormalPlatform,
+    (0, 1) -> PlatformType.NormalPlatform,
+    (0, 2) -> PlatformType.NormalPlatform,
+    (0, 3) -> PlatformType.NormalPlatform,
+    (0, 4) -> PlatformType.EndPlatform,
+    (1, 1) -> PlatformType.NormalPlatform,
+    (1, 2) -> PlatformType.NormalPlatform,
+    (1, 3) -> PlatformType.NormalPlatform,
+    (2, 1) -> PlatformType.NormalPlatform,
+    (2, 2) -> PlatformType.NormalPlatform,
+    (2, 3) -> PlatformType.NormalPlatform,
+  )
+
+  private val level6Platforms = Map(
+    (-1, 1) -> PlatformType.NormalPlatform,
+    (-1, 2) -> PlatformType.NormalPlatform,
+    (-1, 3) -> PlatformType.NormalPlatform,
+    (0, 1) -> PlatformType.NormalPlatform,
+    (0, 2) -> PlatformType.NormalPlatform,
+    (0, 3) -> PlatformType.NormalPlatform,
+    (1, 2) -> PlatformType.NormalPlatform,
+    (1, 3) -> PlatformType.EndPlatform,
+    (1, 4) -> PlatformType.NormalPlatform,
+    (2, 2) -> PlatformType.NormalPlatform,
+    (2, 3) -> PlatformType.NormalPlatform,
+    (2, 4) -> PlatformType.NormalPlatform,
+    (3, 2) -> PlatformType.NormalPlatform,
+    (3, 3) -> PlatformType.NormalPlatform,
+  )
+
   def run(args: List[String]): IO[ExitCode] = {
     IO {
-      val level6Platforms = Map(
-        (-1, 1) -> PlatformType.NormalPlatform,
-        (-1, 2) -> PlatformType.NormalPlatform,
-        (-1, 3) -> PlatformType.NormalPlatform,
-        (0, 0) -> PlatformType.StartPlatform,
-        (0, 1) -> PlatformType.NormalPlatform,
-        (0, 2) -> PlatformType.NormalPlatform,
-        (0, 3) -> PlatformType.NormalPlatform,
-        (1, 2) -> PlatformType.NormalPlatform,
-        (1, 3) -> PlatformType.EndPlatform,
-        (1, 4) -> PlatformType.NormalPlatform,
-        (2, 2) -> PlatformType.NormalPlatform,
-        (2, 3) -> PlatformType.NormalPlatform,
-        (2, 4) -> PlatformType.NormalPlatform,
-        (3, 2) -> PlatformType.NormalPlatform,
-        (3, 3) -> PlatformType.NormalPlatform,
-      )
+      val startPlatform = ((0, 0), PlatformType.StartPlatform)
+      val platforms = level6Platforms + startPlatform
+      val puzzle = Puzzle(platforms)
 
-      val level6 = Puzzle(level6Platforms)
-
-      println(findSolution(level6))
+      println(findSolution(puzzle))
     }.as(ExitCode.Success)
   }
 }
