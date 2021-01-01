@@ -1,0 +1,1 @@
+case class Puzzle(platforms: Map[(Int, Int), PlatformType])
