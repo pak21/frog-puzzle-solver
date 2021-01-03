@@ -11,7 +11,7 @@ case class PuzzleState(
 )
 
 object PuzzleState {
-  def initialState(puzzle: Puzzle, actions: Actions): PuzzleState =
+  def apply(puzzle: Puzzle, actions: Actions): PuzzleState =
     PuzzleState(
       puzzle,
       actions.filter { _._2 != Action.NoAction }.toMap,
@@ -39,11 +39,17 @@ object PuzzleState {
   }
 
   def step(puzzleState: PuzzleState): PuzzleState = {
+    val currentPlatformAction = puzzleState.actions.get(puzzleState.frogPosition)
+    val distance = currentPlatformAction.map {
+      case Action.Jump => 2
+      case _ => 1
+    }.getOrElse(1)
+
     val nextPositionBeforeTeleport = puzzleState.direction match {
-      case Direction.Right => (puzzleState.frogPosition._1 + 1, puzzleState.frogPosition._2)
-      case Direction.Up => (puzzleState.frogPosition._1, puzzleState.frogPosition._2 + 1)
-      case Direction.Left => (puzzleState.frogPosition._1 - 1, puzzleState.frogPosition._2)
-      case Direction.Down => (puzzleState.frogPosition._1, puzzleState.frogPosition._2 - 1)
+      case Direction.Right => (puzzleState.frogPosition._1 + distance, puzzleState.frogPosition._2)
+      case Direction.Up => (puzzleState.frogPosition._1, puzzleState.frogPosition._2 + distance)
+      case Direction.Left => (puzzleState.frogPosition._1 - distance, puzzleState.frogPosition._2)
+      case Direction.Down => (puzzleState.frogPosition._1, puzzleState.frogPosition._2 - distance)
     }
 
     // OK to do this on `nextPosition` as teleporters never change direction
@@ -53,6 +59,7 @@ object PuzzleState {
       case Action.MoveUp => Direction.Up
       case Action.MoveLeft => Direction.Left
       case Action.MoveDown => Direction.Down
+      case Action.Jump => puzzleState.direction
     }.getOrElse(puzzleState.direction)
 
     val nextPlatform = puzzleState.puzzle.platforms.get(nextPositionBeforeTeleport)
