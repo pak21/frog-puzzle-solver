@@ -212,4 +212,45 @@ object LevelData {
     (2, 1) -> PlatformType.NormalPlatform,
     (2, 2) -> PlatformType.NormalPlatform,
   )
+
+  val level19Platforms = Map(
+    (-1, 2) -> PlatformType.NormalPlatform,
+    (-1, 3) -> PlatformType.NormalPlatform,
+    (0, 1) -> PlatformType.NormalPlatform,
+    (0, 2) -> PlatformType.VanishingPlatform,
+    (0, 3) -> PlatformType.NormalPlatform,
+    (1, 2) -> PlatformType.EndPlatform,
+  )
+
+  val level20Platforms = Map(
+    (-1, 2) -> PlatformType.NormalPlatform,
+    (-1, 3) -> PlatformType.NormalPlatform,
+    (0, 1) -> PlatformType.NormalPlatform,
+    (0, 2) -> PlatformType.VanishingPlatform,
+    (0, 3) -> PlatformType.NormalPlatform,
+    (2, 2) -> PlatformType.NormalPlatform,
+    (2, 3) -> PlatformType.NormalPlatform,
+    (2, 4) -> PlatformType.VanishingPlatform,
+    (2, 5) -> PlatformType.NormalPlatform,
+    (3, 4) -> PlatformType.EndPlatform
+  )
+
+  val level21Platforms = Map(
+    (-2, 2) -> PlatformType.NormalPlatform,
+    (-2, 3) -> PlatformType.NormalPlatform,
+    (-1, 2) -> PlatformType.NormalPlatform,
+    (-1, 3) -> PlatformType.VanishingPlatform,
+    (-1, 4) -> PlatformType.NormalPlatform,
+    (0, 1) -> PlatformType.NormalPlatform,
+    (0, 2) -> PlatformType.VanishingPlatform,
+    (0, 3) -> PlatformType.NormalPlatform,
+    (0, 4) -> PlatformType.VanishingPlatform,
+    (0, 5) -> PlatformType.EndPlatform,
+    (1, 2) -> PlatformType.NormalPlatform,
+    (1, 3) -> PlatformType.VanishingPlatform,
+    (1, 4) -> PlatformType.NormalPlatform,
+    (1, 5) -> PlatformType.NormalPlatform,
+    (2, 2) -> PlatformType.NormalPlatform,
+    (2, 3) -> PlatformType.NormalPlatform,
+  )
 }

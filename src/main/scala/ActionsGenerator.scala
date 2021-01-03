@@ -3,7 +3,12 @@ import cats.implicits._
 
 object ActionsGenerator {
   def initialState(puzzle: Puzzle): Actions = {
-    puzzle.platforms.filter { _._2 == PlatformType.NormalPlatform  }.keys.map { (_, Action.NoAction) }.toList
+    puzzle.platforms.filter { platform =>
+      platform._2 match {
+        case PlatformType.NormalPlatform | PlatformType.VanishingPlatform => true
+        case _ => false
+      }
+    }.keys.map { (_, Action.NoAction) }.toList
   }
 
   def next(puzzle: Puzzle, actions: Actions): Option[Actions] = {

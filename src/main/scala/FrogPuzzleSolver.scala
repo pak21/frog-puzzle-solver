@@ -36,7 +36,7 @@ object FrogPuzzleSolver extends IOApp {
   def run(args: List[String]): IO[ExitCode] = {
     IO {
       val startPlatform = ((0, 0), PlatformType.StartPlatform)
-      val platforms = LevelData.level18Platforms + startPlatform
+      val platforms = LevelData.level21Platforms + startPlatform
       val puzzle = Puzzle(platforms, jumpActions)
 
       println(findSolution(puzzle))

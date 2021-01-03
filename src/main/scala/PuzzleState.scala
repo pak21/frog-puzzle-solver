@@ -7,7 +7,8 @@ case class PuzzleState(
   direction: Direction,
   seenStates: Set[((Int, Int), Option[Direction])],
   completion: PuzzleCompletion,
-  moves: Int
+  moves: Int,
+  vanishedPlatforms: Set[(Int, Int)]
 )
 
 object PuzzleState {
@@ -19,7 +20,8 @@ object PuzzleState {
       Direction.Up,
       Set(((0, 0), Some(Direction.Up))),
       PuzzleCompletion.Incomplete,
-      0)
+      0,
+      Set.empty)
 
   private def calculateCompletion(
       puzzleState: PuzzleState,
@@ -33,6 +35,7 @@ object PuzzleState {
           PuzzleCompletion.Success
         else
           PuzzleCompletion.UnvisitedPlatforms
+      case PlatformType.VanishingPlatform if puzzleState.vanishedPlatforms.contains(nextPosition) => PuzzleCompletion.InWater
       case _ =>
         if (nextMoves >= 100) PuzzleCompletion.TimedOut else PuzzleCompletion.Incomplete
     }.getOrElse(PuzzleCompletion.InWater)
@@ -82,6 +85,11 @@ object PuzzleState {
       else
         calculateCompletion(puzzleState, nextPosition, nextSeenStates, nextMoves)
 
+    val nextVanishedPlatforms = nextPlatform match {
+      case Some(PlatformType.VanishingPlatform) => puzzleState.vanishedPlatforms + nextPosition
+      case _ => puzzleState.vanishedPlatforms
+    }
+
     PuzzleState(
       puzzleState.puzzle,
       puzzleState.actions,
@@ -89,7 +97,8 @@ object PuzzleState {
       nextDirection,
       nextSeenStates,
       nextCompletion,
-      nextMoves
+      nextMoves,
+      nextVanishedPlatforms
     )
   }
 }

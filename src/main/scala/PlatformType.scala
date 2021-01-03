@@ -6,4 +6,6 @@ object PlatformType {
   case object EndPlatform extends PlatformType
 
   case class Teleporter(destination: (Int, Int)) extends PlatformType
+
+  case object VanishingPlatform extends PlatformType
 }
