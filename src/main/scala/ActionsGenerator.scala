@@ -1,5 +1,4 @@
 import FrogPuzzleSolver.Actions
-import cats.implicits._
 
 object ActionsGenerator {
   def initialState(puzzle: Puzzle): Actions = {
@@ -14,12 +13,11 @@ object ActionsGenerator {
   def next(puzzle: Puzzle, actions: Actions): Option[Actions] = {
     actions match {
       case Nil => None
-      case h :: t => {
+      case h :: t =>
         Action.nextAction(h, puzzle) match {
-          case None => next(puzzle, t).map { newT => (h._1, Action.NoAction) :: newT }
-          case Some(action) => ((h._1, action) :: t).some
+          case None => next(puzzle, t).map { (h._1, Action.NoAction) :: _ }
+          case Some(action) => Some((h._1, action) :: t)
         }
-      }
     }
   }
 }

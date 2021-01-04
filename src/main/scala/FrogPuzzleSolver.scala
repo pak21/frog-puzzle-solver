@@ -1,9 +1,12 @@
 import cats.effect.{ExitCode, IO, IOApp}
 import cats.implicits._
 
+import scala.annotation.tailrec
+
 object FrogPuzzleSolver extends IOApp {
   type Actions = List[((Int, Int), Action)]
 
+  @tailrec
   def runToCompletion(puzzleState: PuzzleState): PuzzleState = {
     val nextState = PuzzleState.step(puzzleState)
     nextState.completion match {
@@ -12,6 +15,7 @@ object FrogPuzzleSolver extends IOApp {
     }
   }
 
+  @tailrec
   def findSolution(puzzle: Puzzle, actions: Actions, count: Int, moves: Int): (Option[Actions], Int, Int) = {
     val puzzleState = PuzzleState(puzzle, actions)
     val finalState = runToCompletion(puzzleState)
